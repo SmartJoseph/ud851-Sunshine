@@ -15,9 +15,13 @@
  */
 package com.example.android.sunshine.utilities;
 
+import android.net.Uri;
+import android.support.annotation.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -64,9 +68,22 @@ public final class NetworkUtils {
      * @param locationQuery The location that will be queried for.
      * @return The URL to use to query the weather server.
      */
+    @Nullable
     public static URL buildUrl(String locationQuery) {
         // TODO (1) Fix this method to return the URL used to query Open Weather Map's API
-        return null;
+        URL url;
+        try {
+            Uri uri = Uri.parse(FORECAST_BASE_URL)
+                    .buildUpon()
+                    .appendQueryParameter(QUERY_PARAM, locationQuery)
+                    .build();
+
+            url = new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            url = null;
+        }
+        return url;
     }
 
     /**
