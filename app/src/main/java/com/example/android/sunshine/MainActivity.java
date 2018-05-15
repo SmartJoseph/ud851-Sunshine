@@ -20,6 +20,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -39,7 +42,7 @@ import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
 import java.net.URL;
 
 // TODO (1) Implement the proper LoaderCallbacks interface and the methods of that interface
-public class MainActivity extends AppCompatActivity implements ForecastAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements ForecastAdapterOnClickHandler, LoaderManager.LoaderCallbacks<String[]> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -114,10 +117,48 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
         new FetchWeatherTask().execute(location);
     }
 
-    // TODO (2) Within onCreateLoader, return a new AsyncTaskLoader that looks a lot like the existing FetchWeatherTask.
-    // TODO (3) Cache the weather data in a member variable and deliver it in onStartLoading.
 
-    // TODO (4) When the load is finished, show either the data or an error message if there is no data
+    @Override
+    public Loader<String[]> onCreateLoader(int id, Bundle args) {
+
+        // TODO (2) Within onCreateLoader, return a new AsyncTaskLoader that looks a lot like the existing FetchWeatherTask.
+        return new AsyncTaskLoader<String[]>(MainActivity.this) {
+
+            // TODO (3) Cache the weather data in a member variable and deliver it in onStartLoading.
+            private String[] cache = null;
+
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+
+                if (cache != null) {
+                    super.deliverResult(cache);
+                }
+            }
+
+            @Override
+            public String[] loadInBackground() {
+                return new String[0];
+            }
+
+            @Override
+            public void deliverResult(String[] data) {
+                cache = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<String[]> loader, String[] data) {
+        // TODO (4) When the load is finished, show either the data or an error message if there is no data
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String[]> loader) {
+        // not implemented
+    }
+
 
     /**
      * This method is overridden by our MainActivity class in order to handle RecyclerView item
@@ -215,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapterOn
      * page of Android's developer site:
      *
      * @see <a"http://developer.android.com/guide/components/intents-common.html#Maps">
-     *
+     * <p>
      * Hint: Hold Command on Mac or Control on Windows and click that link
      * to automagically open the Common Intents page
      */
