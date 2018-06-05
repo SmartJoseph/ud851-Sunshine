@@ -18,9 +18,14 @@ package com.example.android.sunshine.data;
 import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import com.example.android.sunshine.data.WeatherContract.WeatherEntry;
 
 /**
  * This class serves as the ContentProvider for all of Sunshine's data. This class allows us to
@@ -35,20 +40,30 @@ import android.support.annotation.NonNull;
 public class WeatherProvider extends ContentProvider {
 
 //  TODO (5) Create static constant integer values named CODE_WEATHER & CODE_WEATHER_WITH_DATE to identify the URIs this ContentProvider can handle
+    private static final int CODE_WEATHER = 100;
+    private static final int CODE_WEATHER_WITH_DATE = 101;
 
 //  TODO (7) Instantiate a static UriMatcher using the buildUriMatcher method
+    private static UriMatcher matcher = buildUriMatcher();
 
     WeatherDbHelper mOpenHelper;
 
 //  TODO (6) Write a method called buildUriMatcher where you match URI's to their numeric ID
+    private static UriMatcher buildUriMatcher() {
+        UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
+        matcher.addURI(WeatherContract.CONTENT_AUTHORITY, WeatherContract.PATH_WEATHER, CODE_WEATHER);
+        matcher.addURI(WeatherContract.CONTENT_AUTHORITY, WeatherContract.PATH_WEATHER + "/#", CODE_WEATHER_WITH_DATE);
+        return matcher;
+    }
 
 //  TODO (1) Implement onCreate
     @Override
     public boolean onCreate() {
 //      TODO (2) Within onCreate, instantiate our mOpenHelper
+        mOpenHelper = new WeatherDbHelper(getContext());
 
 //      TODO (3) Return true from onCreate to signify success performing setup
-        return false;
+        return true;
     }
 
     /**
@@ -61,7 +76,6 @@ public class WeatherProvider extends ContentProvider {
      * @param uri    The content:// URI of the insertion request.
      * @param values An array of sets of column_name/value pairs to add to the database.
      *               This must not be {@code null}.
-     *
      * @return The number of values that were inserted.
      */
     @Override
@@ -88,11 +102,31 @@ public class WeatherProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        throw new RuntimeException("Student, implement the query method!");
 
 //      TODO (9) Handle queries on both the weather and weather with date URI
+        switch (matcher.match(uri)) {
+            case CODE_WEATHER: {
+                // apply a default date sort order
+                if (TextUtils.isEmpty(sortOrder)) {
+                    sortOrder = WeatherEntry.COLUMN_DATE + " ASC";
+                }
+                break;
+            }
+            case CODE_WEATHER_WITH_DATE: {
+                // extract the date from the query uri - assumes date is in correct format already
+                selection = selection + WeatherEntry.COLUMN_DATE + "=" + uri.getLastPathSegment();
+                break;
+            }
+        }
 
 //      TODO (10) Call setNotificationUri on the cursor and then return the cursor
+        Cursor query = mOpenHelper.getReadableDatabase().query(WeatherEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+        Context context = getContext();
+        if (context != null) {
+            query.setNotificationUri(context.getContentResolver(), uri);
+        }
+
+        return query;
     }
 
     /**
