@@ -165,6 +165,11 @@ public class WeatherProvider extends ContentProvider {
                     db.endTransaction();
                 }
 
+                // notify any listeners on this uri of the change
+                if (totalRows > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+
 //              TODO (3) Return the number of rows inserted from our implementation of bulkInsert
                 return totalRows;
             }
