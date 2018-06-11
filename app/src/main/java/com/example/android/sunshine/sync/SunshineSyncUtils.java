@@ -51,6 +51,13 @@ public class SunshineSyncUtils {
                     //  TODO (6) If it is empty or we have a null Cursor, sync the weather now!
                     SunshineSyncUtils.startImmediateSync(context);
                 }
+
+                // remember to close the cursor
+                // TODO If we didn't move the cursor, is it really open yet?
+                if ((existingWeather != null) && !existingWeather.isClosed()) {
+                    existingWeather.close();
+                }
+
                 return null;
             }
         }.execute();
