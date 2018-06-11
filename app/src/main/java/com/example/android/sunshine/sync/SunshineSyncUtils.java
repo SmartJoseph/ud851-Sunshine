@@ -22,16 +22,42 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.example.android.sunshine.data.WeatherContract;
+import com.firebase.jobdispatcher.Driver;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 
 public class SunshineSyncUtils {
 
-//  TODO (10) Add constant values to sync Sunshine every 3 - 4 hours
+    //  TODO (10) Add constant values to sync Sunshine every 3 - 4 hours
+    public static final int SYNC_WINDOW_START = 3 /*hours*/ * 60 /*minutes*/ * 60 /*seconds*/;
+    public static final int SYNC_WINDOW_LENGTH = 60 /*minutes*/ * 60 /*seconds*/;
 
     private static boolean sInitialized;
 
-//  TODO (11) Add a sync tag to identify our sync job
+    //  TODO (11) Add a sync tag to identify our sync job
+    public static final String SYNC_TAG = SunshineSyncUtils.class.getName();
 
-//  TODO (12) Create a method to schedule our periodic weather sync
+    //  TODO (12) Create a method to schedule our periodic weather sync
+    synchronized private static void scheduleWeatherSync(@NonNull final Context context) {
+
+        Driver driver = new GooglePlayDriver(context);
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
+
+        Job weatherSyncJob = dispatcher.newJobBuilder()
+                .setService(SunshineFirebaseJobService.class)
+                .setTag(SYNC_TAG)
+                .setRecurring(true)
+                .setLifetime(Lifetime.FOREVER)
+                .setReplaceCurrent(true)
+//                .setConstraints(Constraint.ON_UNMETERED_NETWORK)
+                .setTrigger(Trigger.executionWindow(SYNC_WINDOW_START, SYNC_WINDOW_START + SYNC_WINDOW_LENGTH))
+                .build();
+
+        dispatcher.schedule(weatherSyncJob);
+    }
 
     /**
      * Creates periodic sync tasks and checks to see if an immediate sync is required. If an
@@ -50,7 +76,8 @@ public class SunshineSyncUtils {
 
         sInitialized = true;
 
-//      TODO (13) Call the method you created to schedule a periodic weather sync
+        //      TODO (13) Call the method you created to schedule a periodic weather sync
+        scheduleWeatherSync(context);
 
         /*
          * We need to check to see if our ContentProvider has data to display in our forecast
