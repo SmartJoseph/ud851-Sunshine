@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
 
 import com.example.android.sunshine.DetailActivity;
 import com.example.android.sunshine.R;
@@ -92,7 +93,13 @@ public class NotificationUtils {
                     .getSmallArtResourceIdForWeatherCondition(weatherId);
 
 //          TODO (2) Use NotificationCompat.Builder to begin building the notification
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                    .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                    .setSmallIcon(smallArtResourceId)
+                    .setLargeIcon(largeIcon)
+                    .setContentTitle(notificationTitle)
+                    .setContentText(notificationText)
+                    .setAutoCancel(true);
 
 //          TODO (3) Create an Intent with the proper URI to start the DetailActivity
             Intent detailIntent = new Intent(context, DetailActivity.class);
