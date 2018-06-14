@@ -33,7 +33,7 @@
 
     <!-- TODO (2) Create a style for MainActivity called AppTheme.Forecast that uses our custom ActionBar style -->
     <style name="AppTheme.Forecast">
-        <item name="android:actionBarStyle" tools:targetApi="honeycomb">@style/ActionBar.ShowLogo</item>
+        <item name="actionBarStyle" tools:targetApi="honeycomb">@style/ActionBar.ShowLogo</item>
     </style>
 
     <!-- TODO (3) Create the DetailLabel style -->
