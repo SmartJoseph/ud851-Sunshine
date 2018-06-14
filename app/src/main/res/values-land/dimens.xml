@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="forecast_detail_horizontal_padding">16dp</dimen>
+    <dimen name="forecast_detail_vertical_padding">44dp</dimen>
+</resources>
