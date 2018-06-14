@@ -17,6 +17,7 @@ package com.example.android.sunshine;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -27,9 +28,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.example.android.sunshine.data.WeatherContract;
+import com.example.android.sunshine.databinding.ActivityDetailBinding;
 import com.example.android.sunshine.utilities.SunshineDateUtils;
 import com.example.android.sunshine.utilities.SunshineWeatherUtils;
 
@@ -87,13 +88,13 @@ public class DetailActivity extends AppCompatActivity implements
     private Uri mUri;
 
 //  TODO (2) Remove all the TextView declarations
-    private TextView mDateView;
-    private TextView mDescriptionView;
-    private TextView mHighTemperatureView;
-    private TextView mLowTemperatureView;
-    private TextView mHumidityView;
-    private TextView mWindView;
-    private TextView mPressureView;
+//    private TextView mDateView;
+//    private TextView mDescriptionView;
+//    private TextView mHighTemperatureView;
+//    private TextView mLowTemperatureView;
+//    private TextView mHumidityView;
+//    private TextView mWindView;
+//    private TextView mPressureView;
 
     /*
      * This field is used for data binding. Normally, we would have to call findViewById many
@@ -103,23 +104,25 @@ public class DetailActivity extends AppCompatActivity implements
      * programmatically without cluttering up the code with findViewById.
      */
 //  TODO (3) Declare an ActivityDetailBinding field called mDetailBinding
+    ActivityDetailBinding mDetailBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //      TODO (4) Remove the call to setContentView
-        setContentView(R.layout.activity_detail);
+//        setContentView(R.layout.activity_detail);
 
 //      TODO (5) Remove all the findViewById calls
-        mDateView = (TextView) findViewById(R.id.date);
-        mDescriptionView = (TextView) findViewById(R.id.weather_description);
-        mHighTemperatureView = (TextView) findViewById(R.id.high_temperature);
-        mLowTemperatureView = (TextView) findViewById(R.id.low_temperature);
-        mHumidityView = (TextView) findViewById(R.id.humidity);
-        mWindView = (TextView) findViewById(R.id.wind);
-        mPressureView = (TextView) findViewById(R.id.pressure);
+//        mDateView = (TextView) findViewById(R.id.date);
+//        mDescriptionView = (TextView) findViewById(R.id.weather_description);
+//        mHighTemperatureView = (TextView) findViewById(R.id.high_temperature);
+//        mLowTemperatureView = (TextView) findViewById(R.id.low_temperature);
+//        mHumidityView = (TextView) findViewById(R.id.humidity);
+//        mWindView = (TextView) findViewById(R.id.wind);
+//        mPressureView = (TextView) findViewById(R.id.pressure);
 
 //      TODO (6) Instantiate mDetailBinding using DataBindingUtil
+        mDetailBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
 
         mUri = getIntent().getData();
         if (mUri == null) throw new NullPointerException("URI for DetailActivity cannot be null");
@@ -132,10 +135,8 @@ public class DetailActivity extends AppCompatActivity implements
      * This is where we inflate and set up the menu for this Activity.
      *
      * @param menu The options menu in which you place your items.
-     *
      * @return You must return true for the menu to be displayed;
-     *         if you return false it will not be shown.
-     *
+     * if you return false it will not be shown.
      * @see #onPrepareOptionsMenu
      * @see #onOptionsItemSelected
      */
@@ -155,7 +156,6 @@ public class DetailActivity extends AppCompatActivity implements
      * DetailActivity's parent Activity in the AndroidManifest.
      *
      * @param item The menu item that was selected by the user
-     *
      * @return true if you handle the menu click here, false otherwise
      */
     @Override
@@ -198,9 +198,8 @@ public class DetailActivity extends AppCompatActivity implements
     /**
      * Creates and returns a CursorLoader that loads the data for our URI and stores it in a Cursor.
      *
-     * @param loaderId The loader ID for which we need to create a loader
+     * @param loaderId   The loader ID for which we need to create a loader
      * @param loaderArgs Any arguments supplied by the caller
-     *
      * @return A new Loader instance that is ready to start loading.
      */
     @Override
@@ -274,7 +273,7 @@ public class DetailActivity extends AppCompatActivity implements
         String dateText = SunshineDateUtils.getFriendlyDateString(this, localDateMidnightGmt, true);
 
 //      TODO (8) Use mDetailBinding to display the date
-        mDateView.setText(dateText);
+        mDetailBinding.includePrimaryWeatherInfo.date.setText(dateText);
 
         /***********************
          * Weather Description *
@@ -288,7 +287,7 @@ public class DetailActivity extends AppCompatActivity implements
 
 //      TODO (9) Use mDetailBinding to display the description and set the content description
         /* Set the text to display the description*/
-        mDescriptionView.setText(description);
+        mDetailBinding.includePrimaryWeatherInfo.weatherDescription.setText(description);
 
 //      TODO (16) Set the content description of the icon to the same as the weather description a11y text
 
@@ -308,7 +307,7 @@ public class DetailActivity extends AppCompatActivity implements
 
 //      TODO (10) Use mDetailBinding to display the high temperature and set the content description
         /* Set the text to display the high temperature */
-        mHighTemperatureView.setText(highString);
+        mDetailBinding.includePrimaryWeatherInfo.highTemperature.setText(highString);
 
         /*************************
          * Low (min) temperature *
@@ -326,7 +325,7 @@ public class DetailActivity extends AppCompatActivity implements
 
 //      TODO (11) Use mDetailBinding to display the low temperature and set the content description
         /* Set the text to display the low temperature */
-        mLowTemperatureView.setText(lowString);
+        mDetailBinding.includePrimaryWeatherInfo.lowTemperature.setText(lowString);
 
         /************
          * Humidity *
@@ -339,7 +338,7 @@ public class DetailActivity extends AppCompatActivity implements
 
 //      TODO (12) Use mDetailBinding to display the humidity and set the content description
         /* Set the text to display the humidity */
-        mHumidityView.setText(humidityString);
+        mDetailBinding.includeExtraWeatherDetails.tvHumidity.setText(humidityString);
 
 //      TODO (19) Set the content description of the humidity label to the humidity a11y String
 
@@ -355,7 +354,7 @@ public class DetailActivity extends AppCompatActivity implements
 
 //      TODO (13) Use mDetailBinding to display the wind and set the content description
         /* Set the text to display wind information */
-        mWindView.setText(windString);
+        mDetailBinding.includeExtraWeatherDetails.tvWind.setText(windString);
 
 //      TODO (22) Set the content description of the wind label to the wind a11y String
 
@@ -378,7 +377,7 @@ public class DetailActivity extends AppCompatActivity implements
 
 //      TODO (14) Use mDetailBinding to display the pressure and set the content description
         /* Set the text to display the pressure information */
-        mPressureView.setText(pressureString);
+        mDetailBinding.includeExtraWeatherDetails.tvPressure.setText(pressureString);
 
 //      TODO (24) Set the content description of the pressure label to the pressure a11y String
 

@@ -1,0 +1,86 @@
+<!-- TODO (28) Create a layout called extra_weather_details.xml -->
+<!-- TODO (29) Surround the entire layout with <layout/> tags for data binding -->
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <!-- TODO (30) Using ConstraintLayout, create the extra weather details layout -->
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guidelineCenterHorizontally"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"/>
+
+        <TextView
+            android:id="@+id/lblHumidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Humidity"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="8dp"/>
+
+        <TextView
+            android:id="@+id/lblPressure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Pressure"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblHumidity"
+            android:layout_marginLeft="8dp"/>
+
+        <TextView
+            android:id="@+id/lblWind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Wind"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lblPressure"
+            android:layout_marginLeft="8dp"/>
+
+        <TextView
+            android:id="@+id/tvHumidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/lblHumidity"
+            app:layout_constraintStart_toStartOf="@+id/guidelineCenterHorizontally"
+            tools:text="78%"
+            android:layout_marginLeft="8dp"/>
+
+        <TextView
+            android:id="@+id/tvPressure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/lblPressure"
+            app:layout_constraintStart_toStartOf="@+id/guidelineCenterHorizontally"
+            tools:text="998 hPa"
+            android:layout_marginLeft="8dp"/>
+
+        <TextView
+            android:id="@+id/tvWind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/lblWind"
+            app:layout_constraintStart_toStartOf="@+id/guidelineCenterHorizontally"
+            tools:text="3km/h SW"
+            android:layout_marginLeft="8dp"/>
+    </android.support.constraint.ConstraintLayout>
+</layout>
